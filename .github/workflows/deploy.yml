@@ -1,0 +1,64 @@
+name: Check and Deploy Website
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages-${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Check source code
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v7
+
+      - name: Check required files
+        run: |
+          test -f index.html || { echo "ERROR: Missing index.html"; exit 1; }
+          test -f style.css || { echo "ERROR: Missing style.css"; exit 1; }
+          test -f script.js || { echo "ERROR: Missing script.js"; exit 1; }
+          echo "PASS: All three required files exist."
+
+      - name: Check title tag in index.html
+        run: |
+          if ! grep -Eiq '<title([[:space:]>])' index.html; then
+            echo "ERROR: index.html does not contain a <title> tag."
+            exit 1
+          fi
+          echo "PASS: The <title> tag exists in index.html."
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: check
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v7
+
+      - name: Prepare website files
+        run: |
+          mkdir public
+          cp index.html style.css script.js public/
+
+      - name: Upload GitHub Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+      - name: Deploy website
+        id: deployment
+        uses: actions/deploy-pages@v5

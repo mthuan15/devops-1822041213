@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Bài tập triển khai website tự động bằng GitHub Actions và GitHub Pages.">
+  <title>Website CI/CD - GitHub Actions</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-content">
+      <a class="brand" href="#home" aria-label="Trang chủ">CI/CD <span>LAB</span></a>
+      <span class="status"><span class="status-dot"></span> Website đang hoạt động</span>
+    </div>
+  </header>
+
+  <main id="home" class="container">
+    <section class="hero">
+      <p class="eyebrow">BÀI TẬP CÁ NHÂN · DEVOPS CƠ BẢN</p>
+      <!-- THAY HỌ VÀ TÊN, MSSV CỦA BẠN TRƯỚC KHI PUSH LÊN GITHUB -->
+      <h1>Vũ Minh Thuận - 1822041213</h1>
+      <h2>Triển khai website tự động với GitHub Actions</h2>
+      <p class="intro">
+        Đây là website thực hành quy trình CI/CD: mỗi lần cập nhật mã nguồn và push lên nhánh
+        <strong>main</strong>, GitHub Actions sẽ tự động kiểm tra các tệp cần thiết trước khi triển khai website.
+      </p>
+      <div class="version-card">
+        <span class="version-label">PHIÊN BẢN HIỆN TẠI</span>
+        <strong id="versionText">Phiên bản 1.0</strong>
+        <span class="version-note">Bạn sẽ đổi nội dung này thành Phiên bản 2.0 ở bước thực nghiệm.</span>
+      </div>
+      <button id="helloButton" class="primary-button" type="button">Kiểm tra JavaScript</button>
+      <p id="message" class="message" aria-live="polite">Nhấn nút để kiểm tra tệp script.js.</p>
+    </section>
+
+    <section class="steps" aria-labelledby="stepsTitle">
+      <div class="section-heading">
+        <p class="eyebrow">PIPELINE</p>
+        <h2 id="stepsTitle">Website được triển khai như thế nào?</h2>
+      </div>
+      <div class="step-grid">
+        <article class="step-card">
+          <span class="step-number">01</span>
+          <h3>Viết code</h3>
+          <p>Tạo website bằng HTML, CSS và JavaScript trong VS Code.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">02</span>
+          <h3>Push lên GitHub</h3>
+          <p>Lưu mã nguồn vào repository Public, trên nhánh main.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">03</span>
+          <h3>Check tự động</h3>
+          <p>GitHub Actions xác nhận đủ ba tệp và có thẻ title trong index.html.</p>
+        </article>
+        <article class="step-card">
+          <span class="step-number">04</span>
+          <h3>Deploy website</h3>
+          <p>Chỉ khi check thành công, website mới được đưa lên GitHub Pages.</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-content">
+      <span>Thực hành CI/CD với GitHub Actions</span>
+      <span>© <span id="currentYear"></span> · Bài tập cá nhân</span>
+    </div>
+  </footer>
+</body>
+</html>

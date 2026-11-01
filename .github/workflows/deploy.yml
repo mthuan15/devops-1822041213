@@ -1,10 +1,9 @@
-name: Check and Deploy Website
+name: CI/CD Deploy Website
 
 on:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 permissions:
   contents: read
@@ -12,53 +11,52 @@ permissions:
   id-token: write
 
 concurrency:
-  group: "pages-${{ github.ref }}"
-  cancel-in-progress: true
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   check:
-    name: Check source code
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Check required files
+      - name: Kiểm tra đủ 3 file (index.html, style.css, script.js)
         run: |
-          test -f index.html || { echo "ERROR: Missing index.html"; exit 1; }
-          test -f style.css || { echo "ERROR: Missing style.css"; exit 1; }
-          test -f script.js || { echo "ERROR: Missing script.js"; exit 1; }
-          echo "PASS: All three required files exist."
+          for file in index.html style.css script.js; do
+            if [ ! -f "$file" ]; then
+              echo "❌ Lỗi: Thiếu file $file!"
+              exit 1
+            fi
+          done
+          echo "✅ Đã có đủ 3 file bắt buộc."
 
-      - name: Check title tag in index.html
+      - name: Kiểm tra index.html có thẻ <title>
         run: |
-          if ! grep -Eiq '<title([[:space:]>])' index.html; then
-            echo "ERROR: index.html does not contain a <title> tag."
+          if ! grep -qi "<title>.*</title>" index.html; then
+            echo "❌ Lỗi: File index.html thiếu thẻ <title>!"
             exit 1
           fi
-          echo "PASS: The <title> tag exists in index.html."
+          echo "✅ File index.html đã có thẻ <title>."
 
   deploy:
-    name: Deploy to GitHub Pages
     needs: check
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Checkout source code
-        uses: actions/checkout@v7
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Prepare website files
-        run: |
-          mkdir public
-          cp index.html style.css script.js public/
+      - name: Cấu hình GitHub Pages
+        uses: actions/configure-pages@v5
 
-      - name: Upload GitHub Pages artifact
-        uses: actions/upload-pages-artifact@v5
+      - name: Đóng gói toàn bộ file website
+        uses: actions/upload-pages-artifact@v3
         with:
-          path: public
+          path: '.'
 
-      - name: Deploy website
+      - name: Deploy lên GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v5
+        uses: actions/deploy-pages@v4
